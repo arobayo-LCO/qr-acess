@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
 from datetime import datetime
+from zoneinfo import ZoneInfo
 import json
 import os
 
@@ -46,8 +47,10 @@ def validar(t: str = ""):
             empleado = emp
             break
 
-    fecha = datetime.now().strftime("%d/%m/%Y")
-    hora = datetime.now().strftime("%I:%M %p")
+    ahora = datetime.now(ZoneInfo("America/Bogota"))
+
+    fecha = ahora.strftime("%d/%m/%Y")
+    hora = ahora.strftime("%I:%M %p")
 
     if empleado is None:
 
