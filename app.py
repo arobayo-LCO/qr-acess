@@ -2,15 +2,34 @@ from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
 from datetime import datetime
 import json
+import os
 
 app = FastAPI()
 
-with open("empleados.json", "r", encoding="utf8") as f:
-    empleados = json.load(f)
+# Ruta absoluta para que funcione tanto en Windows como en Render
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+JSON_FILE = os.path.join(BASE_DIR, "empleados.json")
 
 
 @app.get("/", response_class=HTMLResponse)
 def validar(t: str = ""):
+
+    # Leer el JSON en cada consulta (así siempre toma la versión actual)
+    try:
+        with open(JSON_FILE, "r", encoding="utf-8") as f:
+            empleados = json.load(f)
+    except Exception as e:
+        return HTMLResponse(
+            f"""
+            <html>
+            <body style="font-family:Arial;background:#222;color:white;padding:40px">
+            <h1>Error cargando empleados.json</h1>
+            <pre>{e}</pre>
+            </body>
+            </html>
+            """,
+            status_code=500,
+        )
 
     empleado = None
 
@@ -26,7 +45,9 @@ def validar(t: str = ""):
 
         return f"""
         <html>
+
         <head>
+
         <title>Control de Acceso</title>
 
         <style>
@@ -52,7 +73,11 @@ def validar(t: str = ""):
         }}
 
         h2{{
-            font-size:35px;
+            font-size:40px;
+        }}
+
+        p{{
+            font-size:22px;
         }}
 
         </style>
@@ -89,7 +114,6 @@ def validar(t: str = ""):
         titulo = "ACCESO DENEGADO"
 
     return f"""
-
     <html>
 
     <head>
@@ -115,18 +139,18 @@ def validar(t: str = ""):
     }}
 
     h1{{
-        font-size:65px;
-        margin-bottom:15px;
+        font-size:70px;
+        margin-bottom:10px;
     }}
 
     h2{{
-        font-size:55px;
+        font-size:60px;
         margin-bottom:35px;
     }}
 
     .dato{{
         font-size:30px;
-        margin:10px;
+        margin:8px;
     }}
 
     .fecha{{
@@ -155,9 +179,8 @@ def validar(t: str = ""):
 
         <div class="fecha">
 
-        {fecha}<br>
-
-        {hora}
+            {fecha}<br>
+            {hora}
 
         </div>
 
@@ -166,5 +189,4 @@ def validar(t: str = ""):
     </body>
 
     </html>
-
     """
