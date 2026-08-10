@@ -4,7 +4,15 @@ from datetime import datetime
 import json
 import os
 
-app = FastAPI()
+app = FastAPI(title="LUSEO QR TEST")
+
+@app.get("/test")
+def test():
+    return {
+        "funciona": True,
+        "version": "10 Agosto",
+        "mensaje": "Hola LUSEO"
+    }
 
 # Ruta absoluta para que funcione tanto en Windows como en Render
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
